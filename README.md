@@ -1,5 +1,7 @@
 # Birthday Page
 
+![Birthday Page Android 真机截图](doc/readme-android.png)
+
 `birthday_page` 是一个跨平台 Flutter 生日庆祝页面插件，包含蛋糕、蜡烛、火焰、烟雾和礼花动画。在 Android 上支持通过麦克风识别吹气动作来吹灭蜡烛。
 
 庆祝页面支持 Android、iOS、Web、Windows、macOS 和 Linux；麦克风吹气识别目前正式支持 Android，其他平台可使用手动吹灭功能。Android 音频仅在内存中分析，不会保存或上传录音。
@@ -200,7 +202,7 @@ Android 端通过 `record` 读取 16 kHz、单声道 PCM16 音频流。检测器
 
 ## 许可证
 
-项目采用 [MIT License](LICENSE)。项目所含视觉素材已获得版权许可，可随插件分发。
+项目采用 [MIT License](LICENSE)，版权所有者为 `leewei0923`。项目所含视觉素材已获得版权许可，可随插件分发。
 
 ## 验证
 
