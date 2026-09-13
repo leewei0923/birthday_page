@@ -7,8 +7,35 @@ import 'package:birthday_page/birthday_page.dart';
 
 BirthdayCelebrationPage(
   name: '伟伟',
+  texts: BirthdayCelebrationTexts.zhHans,
   onCelebrated: () { /* Wish completed, once per candle. */ },
   onSkip: () { /* Optional navigation. */ },
+)
+```
+
+## Copy and localization
+
+The package includes Simplified Chinese and English copy. Select a preset from
+the host application's locale:
+
+```dart
+final texts = BirthdayCelebrationTexts.forLocale(
+  Localizations.localeOf(context),
+);
+
+return BirthdayCelebrationPage(name: 'Alex', texts: texts);
+```
+
+Every user-facing string can be customized. Use `{name}` in the birthday
+greeting where the recipient's name should appear:
+
+```dart
+BirthdayCelebrationPage(
+  name: 'Alex',
+  texts: BirthdayCelebrationTexts.en.copyWith(
+    startButton: 'Make a wish',
+    birthdayGreeting: 'Have a wonderful birthday, {name}!',
+  ),
 )
 ```
 

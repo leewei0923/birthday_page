@@ -20,11 +20,34 @@ void main() {
       await tester.tap(find.text('也可以轻点这里，吹灭蜡烛'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 800));
-      expect(find.text('Happy Birthday, 伟伟'), findsOneWidget);
+      expect(find.text('生日快乐，伟伟'), findsOneWidget);
       expect(completed, 1);
       await tester.pump(const Duration(seconds: 7));
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },
   );
+
+  testWidgets('supports English and customized copy', (tester) async {
+    tester.view.physicalSize = const Size(800, 760);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final texts = BirthdayCelebrationTexts.en.copyWith(
+      birthdayGreeting: 'Have a wonderful birthday, {name}!',
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BirthdayCelebrationPage(name: 'Alex', texts: texts),
+      ),
+    );
+
+    expect(find.text('Let’s Celebrate  →'), findsOneWidget);
+    expect(find.text('Or tap here to blow out the candle'), findsOneWidget);
+    await tester.tap(find.text('Or tap here to blow out the candle'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 800));
+    expect(find.text('Have a wonderful birthday, Alex!'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
 }

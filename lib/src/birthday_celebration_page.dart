@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 import 'blow_detector.dart';
+import 'birthday_celebration_texts.dart';
 
 enum CandleState { idle, blowing, extinguishing, extinguished }
 
@@ -14,10 +15,12 @@ class BirthdayCelebrationPage extends StatefulWidget {
     this.name = '伟伟',
     this.onSkip,
     this.onCelebrated,
+    this.texts = BirthdayCelebrationTexts.zhHans,
   });
   final String name;
   final VoidCallback? onSkip;
   final VoidCallback? onCelebrated;
+  final BirthdayCelebrationTexts texts;
   @override
   State<BirthdayCelebrationPage> createState() =>
       _BirthdayCelebrationPageState();
@@ -44,12 +47,24 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
   CandleState _state = CandleState.idle;
   bool _starting = false, _listening = false;
   int _session = 0;
-  String _hint = '点亮这一刻，许一个小小的愿望';
+  late String _hint;
 
   @override
   void initState() {
     super.initState();
+    _hint = widget.texts.initialHint;
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didUpdateWidget(covariant BirthdayCelebrationPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.texts != oldWidget.texts &&
+        _state == CandleState.idle &&
+        !_starting &&
+        !_listening) {
+      _hint = widget.texts.initialHint;
+    }
   }
 
   Future<void> _stop() async {
@@ -86,7 +101,7 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
     final session = ++_session;
     setState(() {
       _starting = true;
-      _hint = '正在开启麦克风…';
+      _hint = widget.texts.openingMicrophoneHint;
     });
     final recorder = AudioRecorder();
     _recorder = recorder;
@@ -109,7 +124,7 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
       setState(() {
         _starting = false;
         _listening = true;
-        _hint = '先安静一小会儿，听听周围的声音…';
+        _hint = widget.texts.calibratingHint;
       });
       _audio = stream.listen(
         (bytes) {
@@ -124,8 +139,8 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                 ? CandleState.blowing
                 : CandleState.idle;
             _hint = _detector.calibrated
-                ? '对着麦克风轻轻吹气，持续半秒'
-                : '先安静一小会儿，听听周围的声音…';
+                ? widget.texts.blowHint
+                : widget.texts.calibratingHint;
           });
         },
         onError: (Object error) {
@@ -137,19 +152,19 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
       );
       _timeout = Timer(
         const Duration(seconds: 30),
-        () => _unavailable('休息一下吧，点按钮可以重新尝试'),
+        () => _unavailable(widget.texts.timeoutHint),
       );
     } catch (_) {
       if (mounted && session == _session) _unavailable();
     }
   }
 
-  void _unavailable([String message = '麦克风暂不可用，也可以点下方手动吹灭']) {
+  void _unavailable([String? message]) {
     unawaited(_stop());
     if (mounted) {
       setState(() {
         _state = CandleState.idle;
-        _hint = message;
+        _hint = message ?? widget.texts.microphoneUnavailableHint;
       });
     }
   }
@@ -162,13 +177,13 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
     unawaited(_stop());
     setState(() {
       _state = CandleState.extinguishing;
-      _hint = '把愿望藏在心里…';
+      _hint = widget.texts.extinguishingHint;
     });
     await _out.forward(from: 0).orCancel.catchError((Object _) {});
     if (!mounted) return;
     setState(() {
       _state = CandleState.extinguished;
-      _hint = 'Happy Birthday, ${widget.name}';
+      _hint = widget.texts.greetingFor(widget.name);
     });
     _celebrate.forward(from: 0);
     widget.onCelebrated?.call();
@@ -177,7 +192,7 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state != AppLifecycleState.resumed && (_listening || _starting)) {
-      _unavailable('回来啦，点击按钮继续许愿');
+      _unavailable(widget.texts.resumeHint);
     }
   }
 
@@ -246,7 +261,7 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                   unawaited(_stop());
                                   widget.onSkip?.call();
                                 },
-                                child: const Text('Skip'),
+                                child: Text(widget.texts.skipButton),
                               ),
                             ),
                           Positioned(
@@ -260,11 +275,11 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                       ? math.sin((seconds - 0.3) * math.pi) *
                                             0.025
                                       : 0),
-                              child: const Column(
+                              child: Column(
                                 children: [
                                   Text(
-                                    'H A P P Y',
-                                    style: TextStyle(
+                                    widget.texts.happyHeading,
+                                    style: const TextStyle(
                                       fontSize: 22,
                                       letterSpacing: 9,
                                       fontWeight: FontWeight.w300,
@@ -273,8 +288,8 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                   SizedBox(height: 12),
                                   FittedBox(
                                     child: Text(
-                                      'Birthday!',
-                                      style: TextStyle(
+                                      widget.texts.birthdayTitle,
+                                      style: const TextStyle(
                                         fontFamily: 'Georgia',
                                         fontStyle: FontStyle.italic,
                                         fontSize: 66,
@@ -285,9 +300,9 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                   ),
                                   SizedBox(height: 24),
                                   Text(
-                                    'Wishing you a day filled with\nhappiness and all the good things\nyou deserve.',
+                                    widget.texts.wishMessage,
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       height: 1.6,
                                       color: Color(0xff85817b),
@@ -437,14 +452,16 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                             _state == CandleState.extinguishing
                                         ? null
                                         : (_listening
-                                              ? () => _unavailable('已暂停，准备好再继续')
+                                              ? () => _unavailable(
+                                                  widget.texts.pausedHint,
+                                                )
                                               : _listen),
                                     child: Text(
                                       done
-                                          ? '愿望会实现的  ✦  再许一次'
+                                          ? widget.texts.retryButton
                                           : _listening
-                                          ? '正在聆听  ·  点击暂停'
-                                          : 'Let’s Celebrate  →',
+                                          ? widget.texts.listeningButton
+                                          : widget.texts.startButton,
                                       style: const TextStyle(fontSize: 16),
                                     ),
                                   ),
@@ -457,7 +474,9 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                       ? null
                                       : _extinguish,
                                   child: Text(
-                                    done ? '愿你每一天都被温柔以待' : '也可以轻点这里，吹灭蜡烛',
+                                    done
+                                        ? widget.texts.completedMessage
+                                        : widget.texts.manualExtinguishButton,
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Color(0xff9b9185),

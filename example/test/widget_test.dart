@@ -5,6 +5,6 @@ void main() {
   testWidgets('shows the birthday scene', (tester) async {
     await tester.pumpWidget(const MyApp());
     expect(find.text('Birthday!'), findsOneWidget);
-    expect(find.text('Let’s Celebrate  →'), findsOneWidget);
+    expect(find.text('开始庆祝  →'), findsOneWidget);
   });
 }
