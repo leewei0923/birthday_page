@@ -50,4 +50,22 @@ void main() {
     expect(find.text('Have a wonderful birthday, Alex!'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
   });
+
+  testWidgets('supports custom body and birthday title fonts', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: BirthdayCelebrationPage(
+          fontFamily: 'HostSans',
+          birthdayFontFamily: 'HostScript',
+        ),
+      ),
+    );
+
+    final heading = tester.widget<Text>(find.text('H A P P Y'));
+    final title = tester.widget<Text>(find.text('Birthday!'));
+    final startButton = tester.widget<Text>(find.text('开始庆祝  →'));
+    expect(heading.style?.fontFamily, 'HostSans');
+    expect(title.style?.fontFamily, 'HostScript');
+    expect(startButton.style?.fontFamily, 'HostSans');
+  });
 }

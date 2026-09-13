@@ -16,11 +16,24 @@ class BirthdayCelebrationPage extends StatefulWidget {
     this.onSkip,
     this.onCelebrated,
     this.texts = BirthdayCelebrationTexts.zhHans,
+    this.fontFamily,
+    this.birthdayFontFamily,
   });
   final String name;
   final VoidCallback? onSkip;
   final VoidCallback? onCelebrated;
   final BirthdayCelebrationTexts texts;
+
+  /// Font family applied to all page copy.
+  ///
+  /// The family must be registered by the host application. When omitted,
+  /// text inherits the host application's theme.
+  final String? fontFamily;
+
+  /// Optional font family used only by the large birthday title.
+  ///
+  /// It falls back to [fontFamily], then to Georgia when neither is supplied.
+  final String? birthdayFontFamily;
   @override
   State<BirthdayCelebrationPage> createState() =>
       _BirthdayCelebrationPageState();
@@ -261,7 +274,12 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                   unawaited(_stop());
                                   widget.onSkip?.call();
                                 },
-                                child: Text(widget.texts.skipButton),
+                                child: Text(
+                                  widget.texts.skipButton,
+                                  style: TextStyle(
+                                    fontFamily: widget.fontFamily,
+                                  ),
+                                ),
                               ),
                             ),
                           Positioned(
@@ -279,7 +297,8 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                 children: [
                                   Text(
                                     widget.texts.happyHeading,
-                                    style: const TextStyle(
+                                    style: TextStyle(
+                                      fontFamily: widget.fontFamily,
                                       fontSize: 22,
                                       letterSpacing: 9,
                                       fontWeight: FontWeight.w300,
@@ -289,8 +308,11 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                   FittedBox(
                                     child: Text(
                                       widget.texts.birthdayTitle,
-                                      style: const TextStyle(
-                                        fontFamily: 'Georgia',
+                                      style: TextStyle(
+                                        fontFamily:
+                                            widget.birthdayFontFamily ??
+                                            widget.fontFamily ??
+                                            'Georgia',
                                         fontStyle: FontStyle.italic,
                                         fontSize: 66,
                                         height: 1.2,
@@ -302,7 +324,8 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                   Text(
                                     widget.texts.wishMessage,
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
+                                    style: TextStyle(
+                                      fontFamily: widget.fontFamily,
                                       fontSize: 16,
                                       height: 1.6,
                                       color: Color(0xff85817b),
@@ -432,7 +455,8 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                   child: Text(
                                     _hint,
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
+                                    style: TextStyle(
+                                      fontFamily: widget.fontFamily,
                                       color: Color(0xff898177),
                                       fontSize: 13,
                                     ),
@@ -462,7 +486,10 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                           : _listening
                                           ? widget.texts.listeningButton
                                           : widget.texts.startButton,
-                                      style: const TextStyle(fontSize: 16),
+                                      style: TextStyle(
+                                        fontFamily: widget.fontFamily,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -477,7 +504,8 @@ class _BirthdayCelebrationPageState extends State<BirthdayCelebrationPage>
                                     done
                                         ? widget.texts.completedMessage
                                         : widget.texts.manualExtinguishButton,
-                                    style: const TextStyle(
+                                    style: TextStyle(
+                                      fontFamily: widget.fontFamily,
                                       fontSize: 12,
                                       color: Color(0xff9b9185),
                                     ),
