@@ -1,0 +1,45 @@
+<svg width="160" height="280" viewBox="0 0 160 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow" x="-60%" y="-40%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <radialGradient id="outerGlow" cx="50%" cy="72%" r="62%">
+      <stop offset="0%" stop-color="#FFF6C6" stop-opacity="0.96"/>
+      <stop offset="42%" stop-color="#FFD56E" stop-opacity="0.78"/>
+      <stop offset="72%" stop-color="#FFAE2E" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#FFAE2E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flameMain" x1="80" y1="16" x2="80" y2="244" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFDF3"/>
+      <stop offset="45%" stop-color="#FFF9DE"/>
+      <stop offset="72%" stop-color="#FFE88D"/>
+      <stop offset="100%" stop-color="#FFB22B"/>
+    </linearGradient>
+    <linearGradient id="flameInner" x1="80" y1="40" x2="80" y2="228" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.98"/>
+      <stop offset="60%" stop-color="#FFFDF8" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#FFF1A6" stop-opacity="0.72"/>
+    </linearGradient>
+    <linearGradient id="baseGlow" x1="80" y1="218" x2="80" y2="258" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFB43A" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#FF7E1F" stop-opacity="0.88"/>
+    </linearGradient>
+    <linearGradient id="wickGrad" x1="80" y1="218" x2="80" y2="264" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5B321A"/>
+      <stop offset="100%" stop-color="#1E120C"/>
+    </linearGradient>
+  </defs>
+
+  <ellipse cx="80" cy="150" rx="54" ry="106" fill="url(#outerGlow)"/>
+
+  <g filter="url(#glow)">
+    <path d="M80 18C106 44 124 84 124 145C124 203 104 236 80 260C56 236 36 203 36 145C36 84 54 44 80 18Z" fill="url(#flameMain)"/>
+    <path d="M80 40C96 63 108 95 108 147C108 186 97 214 80 232C63 214 52 186 52 147C52 95 64 63 80 40Z" fill="url(#flameInner)"/>
+    <path d="M80 208C90 216 96 231 96 246C96 252 95 257 93 262H67C65 257 64 252 64 246C64 231 70 216 80 208Z" fill="url(#baseGlow)"/>
+    <path d="M80 218C86 224 89 234 89 249C89 255 88 260 86 264H74C72 260 71 255 71 249C71 234 74 224 80 218Z" fill="url(#wickGrad)"/>
+  </g>
+</svg>
