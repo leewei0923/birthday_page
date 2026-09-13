@@ -1,8 +1,8 @@
 # Birthday Page
 
-`birthday_page` 是一个跨平台 Flutter 生日庆祝页面插件，包含蛋糕、蜡烛、火焰、烟雾和礼花动画，并支持通过麦克风识别吹气动作来吹灭蜡烛。
+`birthday_page` 是一个跨平台 Flutter 生日庆祝页面插件，包含蛋糕、蜡烛、火焰、烟雾和礼花动画。在 Android 上支持通过麦克风识别吹气动作来吹灭蜡烛。
 
-插件支持 Android、iOS、Web、Windows、macOS 和 Linux。音频仅在内存中分析，不会保存或上传录音。
+庆祝页面支持 Android、iOS、Web、Windows、macOS 和 Linux；麦克风吹气识别目前正式支持 Android，其他平台可使用手动吹灭功能。Android 音频仅在内存中分析，不会保存或上传录音。
 
 ## 安装
 
@@ -43,7 +43,7 @@ cd example
 flutter run
 ```
 
-点击“开始庆祝”并授予麦克风权限，先保持安静约 600 毫秒完成环境声音校准，然后朝麦克风稳定吹气约 500 毫秒。未授权麦克风时，用户仍可点击手动吹灭按钮完成庆祝流程。
+在 Android 上点击“开始庆祝”并授予麦克风权限，先保持安静约 600 毫秒完成环境声音校准，然后朝麦克风稳定吹气约 500 毫秒。未授权麦克风或使用其他平台时，用户仍可点击手动吹灭按钮完成庆祝流程。
 
 ## 组件 API
 
@@ -170,35 +170,13 @@ BirthdayCelebrationPage(
 
 当前最低支持 Android API 24。
 
-### iOS
+### iOS、macOS、Web、Windows 和 Linux
 
-宿主应用必须在 `ios/Runner/Info.plist` 添加麦克风用途说明：
-
-```xml
-<key>NSMicrophoneUsageDescription</key>
-<string>用于识别吹气并吹灭生日蜡烛</string>
-```
-
-### macOS
-
-在 `macos/Runner/Info.plist` 添加 `NSMicrophoneUsageDescription`，并在 Debug 和 Release entitlements 中启用音频输入：
-
-```xml
-<key>com.apple.security.device.audio-input</key>
-<true/>
-```
-
-### Web
-
-浏览器麦克风权限只能在 HTTPS 或 localhost 环境下使用，并需要用户主动授权。
-
-### Linux
-
-需要安装 `record` 插件要求的原生依赖，包括 `parecord`、`pactl` 和 `ffmpeg`。
+这些平台目前支持庆祝页面和手动吹灭流程，但麦克风吹气识别尚未列入正式支持范围。
 
 ## 吹气识别说明
 
-插件通过 `record` 读取 16 kHz、单声道 PCM16 音频流。检测器会根据环境声音中位数建立基线，并综合音量阈值、持续时间、过零率和音量稳定性识别吹气。
+Android 端通过 `record` 读取 16 kHz、单声道 PCM16 音频流。检测器会根据环境声音中位数建立基线，并综合音量阈值、持续时间、过零率和音量稳定性识别吹气。
 
 吹气识别属于启发式检测。风扇、无声辅音或不同设备的麦克风降噪处理可能影响结果，发布前应在目标真机上验证并调整参数。
 
@@ -218,7 +196,11 @@ BirthdayCelebrationPage(
 
 ## 资源
 
-插件包含蛋糕、蜡烛、火焰、烟雾和背景礼花图片，资源通过 package asset 方式加载，宿主应用无需重复声明。
+插件包含已获得版权许可的蛋糕、蜡烛、火焰、烟雾和背景礼花图片，资源通过 package asset 方式加载，宿主应用无需重复声明。
+
+## 许可证
+
+项目采用 [MIT License](LICENSE)。项目所含视觉素材已获得版权许可，可随插件分发。
 
 ## 验证
 

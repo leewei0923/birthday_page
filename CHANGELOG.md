@@ -1,3 +1,7 @@
 ## 0.0.1
 
-* Initialize the six-platform Flutter plugin scaffold.
+* 提供生日蛋糕、蜡烛、火焰、烟雾和礼花动画页面。
+* 支持 Android 麦克风吹气识别及手动吹灭蜡烛。
+* 提供简体中文、英文和自定义文案配置。
+* 支持自定义全局字体和生日标题字体。
+* 提供 Android、iOS、Web、Windows、macOS 和 Linux 页面接入。
